@@ -37,8 +37,8 @@
 
     This script will:
     
-    Generate a HTML status report from a configurable list of Windows servers.
-    The report will highlight information is the alert threashold is exceeded.
+    Generate a status report from a list of Windows servers.
+    The report will highlight information if the alert threshold is exceeded.
 
     Please note: to send a log file using ssl and an SMTP password you must generate an encrypted
     password file. The password file is unique to both the user and machine.
@@ -49,10 +49,10 @@
     $creds.Password | ConvertFrom-SecureString | Set-Content c:\foo\ps-script-pwd.txt
     
     .PARAMETER List
-    The path to a text file with a list of server names to monitor.
+    The path to a TXT file containing the netbios names of the servers you wish to check.
 
     .PARAMETER O
-    The path where the HTML report should be output to. The filename will be WinServ-Status-Report.htm.
+    The path where the report file will be output to.
 
     .PARAMETER DiskAlert
     The percentage of disk usage that should cause the disk space alert to be raised.
@@ -68,19 +68,19 @@
     and the maximum is 28800 (8 hours). If not configured the script will run once and then exit.
 
     .PARAMETER Light
-    Use a light theme for the web page generated.
+    Configure the HTML results file to have a light theme.
 
     .PARAMETER Csv
-    The path where the CSV file of the report should be output to. The filename will be WinServ-Status-Report.csv.
+    Export a CSV file, instead of a HTML file.
 
     .PARAMETER SendTo
     The e-mail address the log should be sent to.
 
     .PARAMETER From
-    The from address the log should be sent from.
+    The e-mail address the log should be sent from.
 
     .PARAMETER Smtp
-    The DNS or IP address of the SMTP server.
+    The DNS name or IP address of the SMTP server.
 
     .PARAMETER User
     The user account to connect to the SMTP server.
@@ -89,18 +89,17 @@
     The txt file containing the encrypted password for the user account.
 
     .PARAMETER UseSsl
-    Connect to the SMTP server using SSL.
+    Configures the script to connect to the SMTP server using SSL.
 
     .EXAMPLE
-    WinServ-Status.ps1 -List C:\foo\servers.txt -O C:\foo -DiskAlert 90 -CpuAlert 95 -MemAlert 85 -Refresh 300 -Light -Csv
-    The script will execute using the list of servers and output a html report called WinServ-Status-Report.htm to C:\foo.
+    WinServ-Status.ps1 -List C:\foo\servers.txt -O C:\foo -DiskAlert 90 -CpuAlert 95 -MemAlert 85 -Refresh 300 -Light
+    Using the switches above the script will execute using the list of servers and output a HTML report to C:\foo.
     The disk usage alert will highlight at 90% usage for any one drive, the CPU usage alert will highlight at 95% usage,
     and the memory usage alert will highlight at 85% usage. The status of the servers will refresh every 5 minutes, and
-    the web page will have a light theme instead of a dark theme. In addition to the HTML file, a CSV report will also be
-    generated.
+    the web page will have a light theme instead of a dark theme.
 #>
 
-## Set up command line switches and what variables they map to
+## Set up command line switches and what variables they map to.
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory=$True)]
@@ -137,7 +136,7 @@ Param(
     [string]$SmtpPwd,
     [switch]$UseSsl)
 
-## Function to get the up time from the server
+## Function to get the up time from a server.
 Function Get-UpTime
 {
     param([string] $LastBootTime)
@@ -148,7 +147,7 @@ Function Get-UpTime
 ## Begining of the loop. At the bottom of the script the loop is broken if the refresh option is not configured.
 Do
 {
-    ## Setting the location of the report output.
+    ## If CSV is configured, setting the location and name of the report output. If CSV is not configured output a HTML file.
     If ($Csv)
     {
         $OutputFile = "$OutputPath\WinServ-Status-Report.csv"
@@ -170,7 +169,7 @@ Do
     $ServerList = Get-Content $ServerFile
     $Result = @()
 
-    ## Settings colours used in HTML report
+    ## Settings colours used in HTML report.
     $Green = "00e600"
     $Grey = "e6e6e6"
     $Red = "ff4d4d"
@@ -197,12 +196,12 @@ Do
 
     $ServerListFinal = $ServersOffline + $ServersOnline
 
-    ## Look through the servers in the file provided
+    ## Look through the final servers list.
     ForEach ($ServerName in $ServerListFinal)
     {
         $PingStatus = Test-Connection -ComputerName $ServerName -Count 1 -Quiet
 
-        ## If server responds, get uptime and disk info
+        ## If server responds, get the stats for the server.
         If ($PingStatus)
         {
             $CpuAlert = $false
@@ -215,7 +214,7 @@ Do
             $DiskUsage = Get-WmiObject Win32_LogicalDisk -ComputerName $ServerName | Where-Object {$_.DriveType -eq 3} | Foreach-Object {$_.DeviceID, [Math]::Round((($_.Size - $_.FreeSpace) * 100)/ $_.Size); If([Math]::Round((($_.Size - $_.FreeSpace) * 100)/ $_.Size) -ge $DiskAlertThreshold){$DiskAlert = $True}; "%"}
 	    }
 	
-        ## Put the results together
+        ## Put the results together in an array.
         $Result += New-Object PSObject -Property @{
 	        ServerName = $ServerName
 		    Status = $PingStatus
@@ -228,7 +227,7 @@ Do
             DiskAlert = $DiskAlert
 	    }
 
-        ## Clear the variables after obtaining and storing the results, otherwise hilarity ensues.
+        ## Clear the variables after obtaining and storing the results, otherwise data is duplicated.
         If ($ServerListFinal)
         {
             Clear-Variable ServerListFinal
@@ -273,7 +272,7 @@ Do
     ## If there is a result put the report together.
     If ($Result -ne $null)
     {
-        ## If CSV report is specified, output a CSV file.
+        ## If CSV report is specified, output a CSV file. If CSV is not configured output a HTML file.
         If ($Csv)
         {
             ForEach($Entry in $Result)
@@ -290,9 +289,9 @@ Do
             }
         }
 
-        ## If a CSV report is not specified, output a HTML file
         Else
         {
+            ## If the light theme is specified, use a lighter css theme. If not, use the dark css theme.
             If ($Light)
             {
                 $HTML = '<style type="text/css">
@@ -435,32 +434,32 @@ Do
             $HTML | Out-File $OutputFile
         }
 
-        ## If email was configured, set the variables for the email subject and body
+        ## If email was configured, set the variables for the email subject and body.
         If ($SmtpServer)
         {
             $MailSubject = "Server Status Report"
             $MailBody = Get-Content -Path $OutputFile | Out-String
 
-            ## If an email password was configured, create a variable with the username and password
+            ## If an email password was configured, create a variable with the username and password.
             If ($SmtpPwd)
             {
                 $SmtpPwdEncrypt = Get-Content $SmtpPwd | ConvertTo-SecureString
                 $SmtpCreds = New-Object System.Management.Automation.PSCredential -ArgumentList ($SmtpUser, $SmtpPwdEncrypt)
 
-                ## If ssl was configured, send the email with ssl
+                ## If ssl was configured, send the email with ssl.
                 If ($UseSsl)
                 {
                     Send-MailMessage -To $MailTo -From $MailFrom -Subject $MailSubject -Body $MailBody -BodyAsHtml -SmtpServer $SmtpServer -UseSsl -Credential $SmtpCreds
                 }
 
-                ## If ssl wasn't configured, send the email without ssl
+                ## If ssl wasn't configured, send the email without ssl.
                 Else
                 {
                     Send-MailMessage -To $MailTo -From $MailFrom -Subject $MailSubject -Body $MailBody -BodyAsHtml -SmtpServer $SmtpServer -Credential $SmtpCreds
                 }
             }
 
-            ## If an email username and password were not configured, send the email without authentication
+            ## If an email username and password were not configured, send the email without authentication.
             Else
             {
                 Send-MailMessage -To $MailTo -From $MailFrom -Subject $MailSubject -Body $MailBody -BodyAsHtml -SmtpServer $SmtpServer
