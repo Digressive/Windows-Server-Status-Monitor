@@ -1,4 +1,4 @@
-# Windows-Server-Status-Monitor
+# Windows Server Status Monitor
 PowerShell based Windows Server monitor
 
 Windows Server Status Monitor can also be downloaded from:
