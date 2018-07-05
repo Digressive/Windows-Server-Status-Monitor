@@ -38,59 +38,59 @@ After running the commands, you will have a text file containing the encrypted p
 
 Here’s a list of all the command line switches and example configurations.
 ```
-List
+-List
 ```
 The path to a TXT file containing the netbios names of the servers you wish to check.
 ```
-O
+-O
 ```
 The path where the report file will be output to.
 ```
-DiskAlert
+-DiskAlert
 ```
 The percentage of disk usage that should cause the disk space alert to be raised.
 ```
-CpuAlert
+-CpuAlert
 ```
 The percentage of CPU usage that should cause the CPU alert to be raised.
 ```
-MemAlert
+-MemAlert
 ```
 The percentage of memory usage that should cause the memory alert to be raised.
 ```
-Refresh
+-Refresh
 ```
 The number of seconds that she script should wait before running again. The minimum is 300 seconds (5 minutes) and the maximum is 28800 (8 hours). If not configured the script will run once and then exit.
 ```
-Light
+-Light
 ```
 Configure the HTML results file to have a light theme.
 ```
-Csv
+-Csv
 ```
 Export a CSV file, instead of a HTML file.
 ```
-SendTo
+-SendTo
 ```
 The e-mail address the log should be sent to.
 ```
-From
+-From
 ```
 The e-mail address the log should be sent from.
 ```
-Smtp
+-Smtp
 ```
 The DNS name or IP address of the SMTP server.
 ```
-User
+-User
 ```
 The user account to connect to the SMTP server.
 ```
-Pwd
+-Pwd
 ```
 The txt file containing the encrypted password for the user account.
 ```
-UseSsl
+-UseSsl
 ```
 Configures the script to connect to the SMTP server using SSL.
 
