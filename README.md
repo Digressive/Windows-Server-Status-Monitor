@@ -94,6 +94,8 @@ The txt file containing the encrypted password for the user account.
 ```
 Configures the script to connect to the SMTP server using SSL.
 
+### Example
+
 ```
 WinServ-Status.ps1 -List C:\foo\servers.txt -O C:\foo -DiskAlert 90 -CpuAlert 95 -MemAlert 85 -Refresh 300 -Light
 ```
