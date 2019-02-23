@@ -1,6 +1,6 @@
 ﻿<#PSScriptInfo
 
-.VERSION 1.5
+.VERSION 1.6
 
 .GUID 2cb94e4f-1e85-4712-9441-91abcaea8572
 
@@ -65,7 +65,7 @@
 
     .PARAMETER Refresh
     The number of seconds that she script should wait before running again. The minimum is 300 seconds (5 minutes)
-    and the maximum is 28800 (8 hours). If not configured the script will run once and then exit.
+    and the maximum is 28800 (8 hours). If not configured the script will run once and then end.
 
     .PARAMETER Light
     Configure the HTML results file to have a light theme.
@@ -169,12 +169,20 @@ Do
     $ServerList = Get-Content $ServerFile
     $Result = @()
 
-    ## Settings colours used in HTML report.
+    ## Using variables for HTML and CSS so we don't need to use escape characters below.
     $Green = "00e600"
     $Grey = "e6e6e6"
     $Red = "ff4d4d"
-    $Yellow = "ffff4d"
     $Black = "1a1a1a"
+    $Yellow = "ffff4d"
+    $CssError = "error"
+    $CssFormat = "format"
+    $CssSpinner = "spinner"
+    $CssRect1 = "rect1"
+    $CssRect2 = "rect2"
+    $CssRect3 = "rect3"
+    $CssRect4 = "rect4"
+    $CssRect5 = "rect5"
 
     ## Sort Servers based on whther they are online or offline
     $ServerList = $ServerList | Sort-Object
@@ -208,10 +216,10 @@ Do
             $MemAlert = $false
             $DiskAlert = $false
             $OperatingSystem = Get-WmiObject Win32_OperatingSystem -ComputerName $ServerName
-            $CpuUsage = Get-WmiObject Win32_Processor -Computername $ServerName | Measure-Object -Property LoadPercentage -Average | ForEach-Object {$_.Average; If($_.Average -ge $CpuAlertThreshold){$CpuAlert = $True}; "%"}
+            $CpuUsage = Get-WmiObject Win32_Processor -Computername $ServerName | Measure-Object -Property LoadPercentage -Average | ForEach-Object {$_.Average; If($_.Average -ge $CpuAlertThreshold){$CpuAlert = $True};}
             $Uptime = Get-Uptime($OperatingSystem.LastBootUpTime)
-            $MemUsage = Get-WmiObject -Class Win32_OperatingSystem -ComputerName $ServerName | ForEach-Object {“{0:N0}” -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory) * 100)/ $_.TotalVisibleMemorySize); If((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory) * 100)/ $_.TotalVisibleMemorySize -ge $MemAlertThreshold){$MemAlert = $True}; "%"}
-            $DiskUsage = Get-WmiObject Win32_LogicalDisk -ComputerName $ServerName | Where-Object {$_.DriveType -eq 3} | Foreach-Object {$_.DeviceID, [Math]::Round((($_.Size - $_.FreeSpace) * 100)/ $_.Size); If([Math]::Round((($_.Size - $_.FreeSpace) * 100)/ $_.Size) -ge $DiskAlertThreshold){$DiskAlert = $True}; "%"}
+            $MemUsage = Get-WmiObject -Class Win32_OperatingSystem -ComputerName $ServerName | ForEach-Object {“{0:N0}” -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory) * 100)/ $_.TotalVisibleMemorySize); If((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory) * 100)/ $_.TotalVisibleMemorySize -ge $MemAlertThreshold){$MemAlert = $True};}
+            $DiskUsage = Get-WmiObject Win32_LogicalDisk -ComputerName $ServerName | Where-Object {$_.DriveType -eq 3} | Foreach-Object {$_.DeviceID, [Math]::Round((($_.Size - $_.FreeSpace) * 100)/ $_.Size); If([Math]::Round((($_.Size - $_.FreeSpace) * 100)/ $_.Size) -ge $DiskAlertThreshold){$DiskAlert = $True};}
 	    }
 	
         ## Put the results together in an array.
@@ -279,7 +287,7 @@ Do
             {
                 If ($Entry.Status -eq $True)
                 {
-                    Add-Content -Path "$OutputFile" -Value "$($Entry.ServerName),Online,CPU: $($Entry.CpuUsage),RAM: $($Entry.MemUsage),$($Entry.DiskUsage),$($Entry.Uptime)"
+                    Add-Content -Path "$OutputFile" -Value "$($Entry.ServerName),Online,CPU: $($Entry.CpuUsage),Mem: $($Entry.MemUsage),$($Entry.DiskUsage),$($Entry.Uptime)"
                 }
 
                 Else
@@ -295,134 +303,152 @@ Do
             If ($Light)
             {
                 $HTML = '<style type="text/css">
-                    p {font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;font-size:14px}
+                    p {font-family:Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:14px}
                     p {color:#000000;}
-                    #Header{font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;width:100%;border-collapse:collapse;}
-                    #Header td, #Header th {font-size:15px;text-align:left;border:1px solid #1a1a1a;padding:2px 2px 2px 7px;color:#ffffff;}
+                    #Header{font-family:Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;width:100%;border-collapse:collapse;}
+                    #Header td, #Header th {font-size:14px;text-align:left;}
                     #Header tr.alt td {color:#ffffff;background-color:#404040;}
-                    #Header tr:nth-child(even) {background-color:#404040;}
                     #Header tr:nth-child(even) {background-color:#404040;}
                     #Header tr:nth-child(odd) {background-color:#737373;}
                     body {background-color: #d9d9d9;}
-                    div {background-color: #d9d9d9;-webkit-animation-name: alert;animation-duration: 4s;animation-iteration-count: infinite;animation-direction: alternate;}
-                    @-webkit-keyframes alert {from {background-color:rgba(217,0,0,0);} to {background-color:rgba(217,0,0,1);}
-                    @keyframes alert {from {background-color:rgba(217,0,0,0);} to {background-color:rgba(217,0,0,1);}
+                    .spinner {width: 40px;height: 20px;font-size: 14px;padding: 5px;}
+                    .spinner > div {background-color: #00e600;height: 100%;width: 3px;display: inline-block;animation: sk-stretchdelay 3.2s infinite ease-in-out;}
+                    .spinner .rect2 {animation-delay: -3.1s;}
+                    .spinner .rect3 {animation-delay: -3.0s;}
+                    .spinner .rect4 {animation-delay: -2.9s;}
+                    .spinner .rect5 {animation-delay: -2.8s;}
+                    @keyframes sk-stretchdelay {0%, 40%, 100% {transform: scaleY(0.4);} 20% {transform: scaleY(1.0);}}
+                    .format {position: relative;overflow: hidden;padding: 5px;}
+                    .error {-webkit-animation-name: alert;animation-duration: 4s;animation-iteration-count: infinite;animation-direction: alternate;padding: 5px;}
+                    @keyframes alert {from {background-color:rgba(117,0,0,0);} to {background-color:rgba(117,0,0,1);}}
                     </style>
                     <head><meta http-equiv="refresh" content="300"></head>'
 
                 $HTML += "<html><body>
-                    <p><font color=#$Black>Status refreshed on: $(Get-Date -Format G)</font></p>
+                    <p><font color=#$Black>Last update: $(Get-Date -Format G)</font></p>
                     <table border=0 cellpadding=0 cellspacing=0 id=header>"
             }
 
+            ## If the light theme is not specified, use a darker css theme.
             Else
             {
                 $HTML = '<style type="text/css">
-                    p {font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;font-size:14px}
+                    p {font-family:Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:14px}
                     p {color:#ffffff;}
-                    #Header{font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;width:100%;border-collapse:collapse;}
-                    #Header td, #Header th {font-size:15px;text-align:left;border:1px solid #1a1a1a;padding:2px 2px 2px 7px;color:#ffffff;}
-                    #Header tr.alt td {color:#ffffff;background-color:#1a1a1a;}
-                    #Header tr:nth-child(even) {background-color:#1a1a1a;}
-                    #Header tr:nth-child(odd) {background-color:#3b3b3b;}
-                    body {background-color: #1a1a1a;}
-                    div {background-color: #1a1a1a;-webkit-animation-name: alert;animation-duration: 4s;animation-iteration-count: infinite;animation-direction: alternate;}
-                    @-webkit-keyframes alert {from {background-color:rgba(217,0,0,0);} to {background-color:rgba(217,0,0,1);}
-                    @keyframes alert {from {background-color:rgba(217,0,0,0);} to {background-color:rgba(217,0,0,1);}
+                    #Header{font-family:Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;width:100%;border-collapse:collapse;}
+                    #Header td, #Header th {font-size:14px;text-align:left;}
+                    #Header tr:nth-child(even) {background-color:#0F0F0F;}
+                    #Header tr:nth-child(odd) {background-color:#1B1B1B;}
+                    body {background-color: #0F0F0F;}
+                    .spinner {width: 40px;height: 20px;font-size: 14px;padding: 5px;}
+                    .spinner > div {background-color: #00e600;height: 100%;width: 3px;display: inline-block;animation: sk-stretchdelay 3.2s infinite ease-in-out;}
+                    .spinner .rect2 {animation-delay: -3.1s;}
+                    .spinner .rect3 {animation-delay: -3.0s;}
+                    .spinner .rect4 {animation-delay: -2.9s;}
+                    .spinner .rect5 {animation-delay: -2.8s;}
+                    @keyframes sk-stretchdelay {0%, 40%, 100% {transform: scaleY(0.4);} 20% {transform: scaleY(1.0);}}
+                    .format {position: relative;overflow: hidden;padding: 5px;}
+                    .error {animation-name: alert;animation-duration: 4s;animation-iteration-count: infinite;animation-direction: alternate;padding: 5px;}
+                    @keyframes alert {from {background-color:rgba(117,0,0,0);} to {background-color:rgba(117,0,0,1);}}
                     </style>
                     <head><meta http-equiv="refresh" content="300"></head>'
 
                 $HTML += "<html><body>
-                    <p><font color=#$Grey>Status refreshed on: $(Get-Date -Format G)</font></p>
+                    <p><font color=#$Grey>Last update: $(Get-Date -Format G)</font></p>
                     <table border=0 cellpadding=0 cellspacing=0 id=header>"
             }
 
             ## Highlight the alerts if the alerts are triggered.
             ForEach($Entry in $Result)
             {
+                If ($RefreshTime -ne 0)
+                {
+
+                    If ($Entry.Status -eq $True)
+                    {
+                        $HTML += "<td><div class=$CssSpinner><div class=$CssRect1></div> <div class=$CssRect2></div> <div class=$CssRect3></div> <div class=$CssRect4></div> <div class=$CssRect5></div></div></td>"
+                    }
+                
+
+                    Else
+                    {
+                        $HTML += "<td><div class=$CssError><font color=#$Red>OFFL</font></div></td>"
+                    }
+                }
+
                 If ($Entry.Status -eq $True)
                 {
-                    $HTML += "<td><font color=#$Green>&#10004</font></td>"
+                    $HTML += "<td><div class=$CssFormat><font color=#$Green>$($Entry.ServerName)</font></div></td>"
                 }
 
                 Else
                 {
-                    $HTML += "<td><font color=#$Red>&#10008</font></td>"
-                }
-
-                If ($Entry.Status -eq $True)
-                {
-                    $HTML += "<td><font color=#$Green>$($Entry.ServerName)</font></td>"
-                }
-
-                Else
-                {
-                    $HTML += "<td><div><font color=#$Red>$($Entry.ServerName)</font></div></td>"
+                    $HTML += "<td><div class=$CssError><font color=#$Red>$($Entry.ServerName)</font></div></td>"
                 }
 
                 If ($Entry.CpuUsage -ne $null)
                 {
                     If ($Entry.CpuAlert -eq $True)
                     {
-                        $HTML += "<td><font color=#$Yellow>CPU: $($Entry.CpuUsage)</font></td>"
+                        $HTML += "<td><div class=$CssFormat><font color=#$Yellow>CPU: $($Entry.CpuUsage)%</font></div></td>"
                     }
 
                     Else
                     {
-                        $HTML += "<td><font color=#$Green>CPU: $($Entry.CpuUsage)</font></td>"
+                        $HTML += "<td><div class=$CssFormat><font color=#$Green>CPU: $($Entry.CpuUsage)%</font></div></td>"
                     }
                 }
             
                 Else
                 {
-                    $HTML += "<td><div><font color=#$Red>Offline</font></div></td>"
+                    $HTML += "<td><div class=$CssError><font color=#$Red>OFFL</font></div></td>"
                 }
 
                 If ($Entry.MemUsage -ne $null)
                 {
                     If ($Entry.MemAlert -eq $True)
                     {
-                        $HTML += "<td><font color=#$Yellow>RAM: $($Entry.MemUsage)</font></td>"
+                        $HTML += "<td><div class=$CssFormat><font color=#$Yellow>Mem: $($Entry.MemUsage)%</font></div></td>"
                     }
 
                     Else
                     {
-                        $HTML += "<td><font color=#$Green>RAM: $($Entry.MemUsage)</font></td>"
+                        $HTML += "<td><div class=$CssFormat><font color=#$Green>Mem: $($Entry.MemUsage)%</font></div></td>"
                     }
                 }
 
                 Else
                 {
-                    $HTML += "<td><div><font color=#$Red>Offline</font></div></td>"
+                    $HTML += "<td><div class=$CssError><font color=#$Red>OFFL</font></div></td>"
                 }
 
                 If ($Entry.DiskUsage -ne $null)
                 {
                     If ($Entry.DiskAlert -eq $True)
                     {
-                        $HTML += "<td><font color=#$Yellow>$($Entry.DiskUsage)</font></td>"
+                        $HTML += "<td><div class=$CssFormat><font color=#$Yellow>$($Entry.DiskUsage)%</font></div></td>"
                     }
 
                     Else
                     {
-                        $HTML += "<td><font color=#$Green>$($Entry.DiskUsage)</font></td>"
+                        $HTML += "<td><div class=$CssFormat><font color=#$Green>$($Entry.DiskUsage)%</font></div></td>"
                     }
                 }
 
                 Else
                 {
-                    $HTML += "<td><div><font color=#$Red>Offline</font></div></td>"
+                    $HTML += "<td><div class=$CssError><font color=#$Red>OFFL</font></div></td>"
                 }
 
                 If ($Entry.Status -eq $True)
                 {
-                    $HTML += "<td><font color=#$Green>$($Entry.Uptime)</font></td>
+                    $HTML += "<td><div class=$CssFormat><font color=#$Green>$($Entry.Uptime)</font></div></td>
                             </tr>"
                 }
 
                 Else
                 {
-                    $HTML += "<td><div><font color=#$Red>Offline</font></div></td>
+                    $HTML += "<td><div class=$CssError><font color=#$Red>OFFL</font></div></td>
                             </tr>"
                 }
             }
