@@ -4,7 +4,7 @@
 
 .GUID 2cb94e4f-1e85-4712-9441-91abcaea8572
 
-.AUTHOR Mike Galvin twitter.com/digressive & Dan Price twitter.com/therezin, based on code by Bhavik Solanki.
+.AUTHOR Mike Galvin twitter.com/mikegalvin_ & Dan Price twitter.com/therezin, based on code by Bhavik Solanki.
 
 .COMPANYNAME
 
