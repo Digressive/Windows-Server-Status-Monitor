@@ -70,7 +70,7 @@
     .PARAMETER Light
     Configure the HTML results file to have a light theme.
 
-    .PARAMETER Csv
+    .PARAMETER csv
     Export a CSV file, instead of a HTML file.
 
     .PARAMETER SendTo
@@ -123,7 +123,7 @@ Param(
     [ValidateRange(300,28800)]
     [int]$RefreshTime,
     [switch]$Light,
-    [switch]$Csv,
+    [switch]$csv,
     [Alias("SendTo")]
     [string]$MailTo,
     [Alias("From")]
@@ -148,14 +148,14 @@ Function Get-UpTime
 Do
 {
     ## If CSV is configured, setting the location and name of the report output. If CSV is not configured output a HTML file.
-    If ($Csv)
+    If ($csv)
     {
         $OutputFile = "$OutputPath\WinServ-Status-Report.csv"
         
         ## If the CSV file already exists, clear it
-        $CsvT = Test-Path -Path $OutputFile
+        $csvT = Test-Path -Path $OutputFile
 
-        If ($CsvT)
+        If ($csvT)
         {
             Clear-Content -Path $OutputFile
         }
@@ -278,10 +278,10 @@ Do
     }
 
     ## If there is a result put the report together.
-    If ($Result -ne $null)
+    If ($Null -ne $Result)
     {
         ## If CSV report is specified, output a CSV file. If CSV is not configured output a HTML file.
-        If ($Csv)
+        If ($csv)
         {
             ForEach($Entry in $Result)
             {
@@ -386,7 +386,7 @@ Do
                     $HTML += "<td><div class=$CssError><font color=#$Red>$($Entry.ServerName)</font></div></td>"
                 }
 
-                If ($Entry.CpuUsage -ne $null)
+                If ($Null -ne $Entry.CpuUsage)
                 {
                     If ($Entry.CpuAlert -eq $True)
                     {
@@ -404,7 +404,7 @@ Do
                     $HTML += "<td><div class=$CssError><font color=#$Red>OFFL</font></div></td>"
                 }
 
-                If ($Entry.MemUsage -ne $null)
+                If ($Null -ne $Entry.MemUsage)
                 {
                     If ($Entry.MemAlert -eq $True)
                     {
@@ -422,7 +422,7 @@ Do
                     $HTML += "<td><div class=$CssError><font color=#$Red>OFFL</font></div></td>"
                 }
 
-                If ($Entry.DiskUsage -ne $null)
+                If ($Null -ne $Entry.DiskUsage)
                 {
                     If ($Entry.DiskAlert -eq $True)
                     {

@@ -67,7 +67,7 @@ The number of seconds that she script should wait before running again. The mini
 ```
 Configure the HTML results file to have a light theme.
 ```
--Csv
+-csv
 ```
 Export a CSV file, instead of a HTML file.
 ```
