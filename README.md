@@ -88,6 +88,12 @@ Configure the HTML results file to have a light theme.
 Export a CSV file, instead of a HTML file.
 
 ``` txt
+-Subject
+```
+
+The email subject that the email should have. Encapulate with single or double quotes.
+
+``` txt
 -SendTo
 ```
 

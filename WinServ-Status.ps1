@@ -1,12 +1,12 @@
 ﻿<#PSScriptInfo
 
-.VERSION 1.6
+.VERSION 1.7
 
 .GUID 2cb94e4f-1e85-4712-9441-91abcaea8572
 
 .AUTHOR Mike Galvin Contact: mike@gal.vin twitter.com/mikegalvin_ & Dan Price twitter.com/therezin, based on code by Bhavik Solanki.
 
-.COMPANYNAME
+.COMPANYNAME Mike Galvin
 
 .COPYRIGHT (C) Mike Galvin. All rights reserved.
 
@@ -73,11 +73,14 @@
     .PARAMETER csv
     Export a CSV file, instead of a HTML file.
 
+    .PARAMETER Subject
+    The email subject that the email should have. Encapulate with single or double quotes.
+
     .PARAMETER SendTo
-    The e-mail address the log should be sent to.
+    The e-mail address the status page should be sent to.
 
     .PARAMETER From
-    The e-mail address the log should be sent from.
+    The e-mail address the status page should be sent from.
 
     .PARAMETER Smtp
     The DNS name or IP address of the SMTP server.
@@ -124,6 +127,8 @@ Param(
     [int]$RefreshTime,
     [switch]$Light,
     [switch]$csv,
+    [alias("Subject")]
+    $MailSubject,
     [Alias("SendTo")]
     [string]$MailTo,
     [Alias("From")]
@@ -463,7 +468,12 @@ Do
         ## If email was configured, set the variables for the email subject and body.
         If ($SmtpServer)
         {
-            $MailSubject = "Server Status Report"
+            # If no subject is set, use the string below
+            If ($Null -eq $MailSubject)
+            {
+                $MailSubject = "Server Status Report"
+            }
+        
             $MailBody = Get-Content -Path $OutputFile | Out-String
 
             ## If an email password was configured, create a variable with the username and password.
