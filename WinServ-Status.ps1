@@ -128,7 +128,7 @@ Param(
     [switch]$Light,
     [switch]$csv,
     [alias("Subject")]
-    $MailSubject,
+    [string]$MailSubject,
     [Alias("SendTo")]
     [string]$MailTo,
     [Alias("From")]
