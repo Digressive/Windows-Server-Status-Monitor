@@ -2,11 +2,16 @@
 
 PowerShell based Windows Server monitor
 
+Please consider donating to support my work:
+
+You can support me on a monthly basis [using Patreon.](https://www.patreon.com/mikegalvin)
+You can support me with a one-time payment [using PayPal](https://www.paypal.me/digressive) or by [using Kofi.](https://ko-fi.com/mikegalvin)
+
 Windows Server Status Monitor can also be downloaded from:
 
+* For full instructions and documentation, [visit my blog post](https://gal.vin/2017/07/28/windows-server-status/)
 * [The Microsoft TechNet Gallery](https://gallery.technet.microsoft.com/Windows-Server-Status-185604a9?redir=0)
 * [The PowerShell Gallery](https://www.powershellgallery.com/packages/WinServ-Status)
-* For full instructions and documentation, [visit my blog post](https://gal.vin/2017/07/28/windows-server-status/)
 
 -Mike
 
