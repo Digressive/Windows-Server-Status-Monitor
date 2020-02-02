@@ -189,7 +189,7 @@ Do
     $CssRect4 = "rect4"
     $CssRect5 = "rect5"
 
-    ## Sort Servers based on whther they are online or offline
+    ## Sort Servers based on whether they are online or offline
     $ServerList = $ServerList | Sort-Object
 
     ForEach ($ServerName in $ServerList)
