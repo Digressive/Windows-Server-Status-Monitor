@@ -2,7 +2,7 @@
 
 PowerShell based Windows Server monitor
 
-For full instructions and documentation, [visit my blog post](https://gal.vin/2017/07/28/windows-server-status/)
+For full instructions and documentation, [visit my blog post](https://gal.vin/posts/windows-server-status/)
 
 Please consider donating to support my work:
 
