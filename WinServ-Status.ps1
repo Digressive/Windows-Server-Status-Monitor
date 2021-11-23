@@ -14,7 +14,7 @@
 
 .LICENSEURI
 
-.PROJECTURI https://gal.vin/2017/07/28/windows-server-status/
+.PROJECTURI https://gal.vin/posts/windows-server-status/
 
 .ICONURI
 
