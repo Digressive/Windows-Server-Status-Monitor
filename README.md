@@ -11,10 +11,9 @@ Please consider donating to support my work:
 
 Windows Server Status Monitor can also be downloaded from:
 
-* [The Microsoft TechNet Gallery](https://gallery.technet.microsoft.com/Windows-Server-Status-185604a9?redir=0)
 * [The PowerShell Gallery](https://www.powershellgallery.com/packages/WinServ-Status)
 
-Tweet me if you have questions: [@mikegalvin_](https://twitter.com/mikegalvin_)
+Join the [Discord](http://discord.gg/5ZsnJ5k) or Tweet me if you have questions: [@mikegalvin_](https://twitter.com/mikegalvin_)
 
 -Mike
 

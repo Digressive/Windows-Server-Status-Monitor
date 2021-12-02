@@ -4,7 +4,7 @@
 
 .GUID 2cb94e4f-1e85-4712-9441-91abcaea8572
 
-.AUTHOR Mike Galvin Contact: mike@gal.vin twitter.com/mikegalvin_ & Dan Price twitter.com/therezin, based on code by Bhavik Solanki.
+.AUTHOR Mike Galvin Contact: mike@gal.vin / twitter.com/mikegalvin_ / discord.gg/5ZsnJ5k & Dan Price twitter.com/therezin, based on code by Bhavik Solanki.
 
 .COMPANYNAME Mike Galvin
 
