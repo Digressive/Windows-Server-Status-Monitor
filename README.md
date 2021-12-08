@@ -24,8 +24,8 @@ Join the [Discord](http://discord.gg/5ZsnJ5k) or Tweet me if you have questions:
 * The utility can display the results as either a CSV file or a HTML file.
 * The utility can be configured to monitor continuously, or run once.
 * The utility can be configured to e-mail the results.
-
-The utility has been tested running on Windows 10 and Windows Server 2016, monitoring PCs and Servers running Windows 10, Windows Server 2016, Windows Server 2012 R2, and Windows Server 2008 R2. The utility must be run as a user with administrator-level privileges to the systems it is monitoring.
+* This utility has been tested running on Windows 10 and Windows Server 2016, monitoring PCs and Servers running Windows 10, Windows Server 2016, Windows Server 2012 R2, and Windows Server 2008 R2.
+* The utility must be run as a user with administrator-level privileges to the systems it is monitoring.
 
 ### Generating A Password File
 
