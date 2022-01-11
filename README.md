@@ -48,7 +48,7 @@ Here’s a list of all the command line switches and example configurations.
 -List
 ```
 
-The path to a TXT file containing the netbios names of the servers you wish to check.
+The path to a TXT file containing the NetBIOS names of the servers you wish to check.
 
 ``` txt
 -O
@@ -96,7 +96,7 @@ Export a CSV file, instead of a HTML file.
 -Subject
 ```
 
-The email subject that the email should have. Encapulate with single or double quotes.
+The email subject that the email should have. Encapsulate with single or double quotes.
 
 ``` txt
 -SendTo
