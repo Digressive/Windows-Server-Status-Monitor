@@ -27,7 +27,7 @@ Please report issues on Github via the issues tab.
 * This utility has been tested running on Windows 10 and Windows Server 2016, monitoring PCs and Servers running Windows 10, Windows Server 2016, Windows Server 2012 R2, and Windows Server 2008 R2.
 * The utility must be run as a user with administrator-level privileges to the systems it is monitoring.
 
-### Generating A Password File
+## Generating A Password File For SMTP Authentication
 
 The password used for SMTP server authentication must be in an encrypted text file. To generate the password file, run the following command in PowerShell, on the computer that is going to run the script and logged in with the user that will be running the script. When you run the command you will be prompted for a username and password. Enter the username and password you want to use to authenticate to your SMTP server.
 
@@ -40,7 +40,7 @@ $creds.Password | ConvertFrom-SecureString | Set-Content c:\scripts\ps-script-pw
 
 After running the commands, you will have a text file containing the encrypted password. When configuring the -Pwd switch enter the path and file name of this file.
 
-### Configuration
+## Configuration
 
 Here’s a list of all the command line switches and example configurations.
 
@@ -134,7 +134,7 @@ The txt file containing the encrypted password for the user account.
 
 Configures the script to connect to the SMTP server using SSL.
 
-### Example
+## Example
 
 ``` txt
 WinServ-Status.ps1 -List C:\foo\servers.txt -O C:\foo -DiskAlert 90 -CpuAlert 95 -MemAlert 85 -Refresh 300 -Light
