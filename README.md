@@ -13,7 +13,7 @@ Windows Server Status Monitor can also be downloaded from:
 
 * [The PowerShell Gallery](https://www.powershellgallery.com/packages/WinServ-Status)
 
-Please report issues on Github via the issues tab.
+Please report any problems via the ‘issues’ tab on GitHub.
 
 -Mike
 
