@@ -1,6 +1,6 @@
 # Windows Server Status Monitor (WSSM)
 
-PowerShell based Windows Server monitor
+## PowerShell based Windows Server monitor
 
 For full instructions and documentation, [visit my blog post](https://gal.vin/posts/windows-server-status/)
 
@@ -62,8 +62,6 @@ Here’s a list of all the command line switches and example configurations.
 | -Pwd | The txt file containing the encrypted password for SMTP authentication. | [path\]ps-script-pwd.txt |
 | -UseSsl | Configures the utility to connect to the SMTP server using SSL. | N/A |
 
-Configures the script to connect to the SMTP server using SSL.
-
 ## Example
 
 ``` txt
@@ -71,3 +69,55 @@ WinServ-Status.ps1 -List C:\foo\servers.txt -O C:\foo -DiskAlert 90 -CpuAlert 95
 ```
 
 Using the switches above the script will execute using the list of servers and output a HTML report to C:\foo. The disk usage alert will highlight at 90% usage for any one drive, the CPU usage alert will highlight at 95% usage, and the memory usage alert will highlight at 85% usage. The status of the servers will refresh every 5 minutes, and the HTML file will have a light theme instead of a dark theme.
+
+## Change Log
+
+### 2019-09-04 v1.7
+
+* Added custom subject line for e-mail.
+
+### 2019-02-23 v1.6
+
+* Updated the style of the web page with a cleaner look.
+* Added 'online' CSS animation when the web page is in monitor mode - this is configured by using the refresh switch. It will not display when in report mode (no refresh switch).
+
+### 2018-06-10 v1.5
+
+* Added light theme for the web page.
+* Added ability to export a CSV file instead of a web page.
+* Improved the Offline visual effect on the web page.
+
+### 2018-05-24 v1.4
+
+* Servers are now sorted alphabetically, regardless of how they are entered in the text file.
+* Offline servers are automatically shuffled to the top of the report.
+* Added validation for the command line parameters.
+* Removed IP addresses, and table headers to make room for more information.
+* Due to removing table headers, added component name to CPU and RAM usage columns.
+* Added new effect using CSS animation for offline servers.
+* Added different shade of black for alternate table rows.
+
+### 2017-10-16 v1.3
+
+* Changed SMTP authentication to require an encrypted password file.
+* Added instructions on how to generate an encrypted password file.
+
+### 2017-10-09 v1.2
+
+* Added necessary information to add the script to the PowerShell Gallery.
+
+### 2018-09-27 v1.1
+
+* Added capability for the script to run and monitor server status continuously.
+* Added icons to warning and error states to assist in at-a-glace reporting.
+* Added memory and CPU usage.
+* Added warning thresholds for memory and CPU usage.
+* Changed disk usage reporting from "percent free" to actual disk usage to match the added CPU and memory usage.
+* Changed the warning threshold to of disk usage to match the change.
+* Changed the visual style of the report.
+* Changed visual style of warnings and errors.
+* Changed code formatting for readability.
+
+### 2017-07-28 v1.0
+
+* First public release.
