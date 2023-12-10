@@ -6,8 +6,7 @@ For full instructions and documentation, [visit my blog post](https://gal.vin/po
 
 Please consider donating to support my work:
 
-* You can support me on a monthly basis [using Patreon.](https://www.patreon.com/mikegalvin)
-* You can support me with a one-time payment [using PayPal](https://www.paypal.me/digressive) or by [using Kofi.](https://ko-fi.com/mikegalvin)
+* You can support me with a one-time payment [using PayPal](https://www.paypal.me/digressive)
 
 Windows Server Status Monitor can also be downloaded from:
 
