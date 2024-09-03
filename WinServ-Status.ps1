@@ -12,7 +12,7 @@
 
 .TAGS Windows Server Status Report Monitor
 
-.LICENSEURI
+.LICENSEURI https://github.com/Digressive/Windows-Server-Status-Monitor?tab=MIT-1-ov-file
 
 .PROJECTURI https://gal.vin/posts/windows-server-status/
 
